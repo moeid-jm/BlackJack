@@ -5,7 +5,7 @@ Black Jack Game written in Python
 
 tried my best to make the game perfect.
 everything is clear and simple.
-Hope to use the game engine and create a real Black Jack game with GUI
+Hope to use the game engine to create a real Black Jack game with GUI.
 
 # the benefit of this game:
 - Deck Updating
