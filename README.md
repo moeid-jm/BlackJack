@@ -3,8 +3,9 @@ Black Jack Game written in Python
 
 # Yep it's a Black Jack Game :)
 
-Don't want to teach you black jack
-but i tried my best to make the game perfect.
+tried my best to make the game perfect.
+everything is clear and simple.
+Hope to use the game engine and create a real Black Jack game with GUI
 
 # the benefit of this game:
 - Deck Updating
