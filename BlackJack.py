@@ -1,5 +1,5 @@
-# BlackJack V2.0 Python Game
-# Don't forget to download modules and GameEngine files!!
+# BlackJack V1.0
+# Hope you enjoy it :)
 
 import random
 from art import logo
