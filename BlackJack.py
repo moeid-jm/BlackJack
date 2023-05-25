@@ -15,50 +15,78 @@ def game_engine():
     card_dealer(user_hand)
     card_dealer(computer_hand)
 
-    print(f"\nYour cards: {user_hand}")
-    print(f"\nComputer\'s first card: {computer_hand[0]}")
+    if blackjack_checker(computer_hand):
+        print(f"\nComputers Have a Black Jack: {computer_hand}")
+        print("** You Lose! **\n")
+        new_game()
 
-    # Using a Loop for communicate with the dealer
-    in_game = True
+    elif blackjack_checker(user_hand):
+        print(f"\nYou have a Black Jack: {user_hand}")
+        print(f"\nComputer\'s cards are: {computer_hand}")
+        print("** You Win **\n")
+        new_game()
 
-    while in_game:
+    else:
+        print(f"\nYour cards: {user_hand}")
+        print(f"\nComputer\'s first card: {computer_hand[0]}")
 
-        if input("\nDo you want another card:(Y/N) ").lower() == 'y':
-            card_dealer(user_hand)
-            print(f"\nYour cards: {user_hand}")
+        # Using a Loop for communicate with the dealer
+        in_game = True
+
+        while in_game:
+
+            if input("\nDo you want another card:(Y/N) ").lower() == 'y':
+                card_dealer(user_hand)
+
+                if blackjack_checker(user_hand):
+                    print(f"\nYou have a Black Jack: {user_hand}")
+                    print(f"\nComputer\'s cards are: {computer_hand}")
+                    print("** You Win **\n")
+                    new_game()
+
+                else:
+                    print(f"\nYour hand: {user_hand}")
+
+                    # Check for Ace card to change the value to 1 in user hand
+                    # If the user score is above 21 then the value of Ace card will change
+                    user_score = score_calculator(user_hand)
+                    updated_user_hand = ace_checker(user_hand, user_score)
+                    updated_user_score = score_calculator(updated_user_hand)
+
+                    if updated_user_score > 21:
+                        print(f"\nYour score is: {updated_user_score}\n")
+                        print("** You Lose! **\n")
 
 
-        else:
-            print("\n**********************************")
+            else:
+                print("\n**********************************")
 
-            # Check for Ace card to change the value to 1 in user hand
-            # If the user score is above 21 then the value of Ace card will change
-            user_score = score_calculator(user_hand)
-            updated_user_hand = ace_checker(user_hand, user_score)
-            updated_user_score = score_calculator(updated_user_hand)
+                # Check for Ace card again to change the value to 1 in user hand
+                user_score = score_calculator(user_hand)
+                updated_user_hand = ace_checker(user_hand, user_score)
+                updated_user_score = score_calculator(updated_user_hand)
 
-            print(f"Your final hand is: {updated_user_hand}")
-            print(f"(Your score: {updated_user_score})\n")
+                print(f"Your final hand is: {updated_user_hand}")
+                print(f"(Your score: {updated_user_score})\n")
 
-            # At the beginning of the round the computer must have 2 cards
-            # if the score is below then 17 computer must pick another card
-            computer_score = score_calculator(computer_hand)
-            updated_computer_hand = computer_hand_updater(computer_hand, computer_score)
-            updated_computer_score = score_calculator(updated_computer_hand)
+                # At the beginning of the round the computer must have 2 cards
+                # if the score is below then 17 computer must pick another card
+                computer_score = score_calculator(computer_hand)
+                updated_computer_hand = computer_hand_updater(computer_hand, computer_score)
+                updated_computer_score = score_calculator(updated_computer_hand)
 
-            print(f"\nComputer\'s final hand is: {updated_computer_hand}")
-            print(f"(Computer\'s score: {updated_computer_score})\n")
+                print(f"\nComputer\'s final hand is: {updated_computer_hand}")
+                print(f"(Computer\'s score: {updated_computer_score})\n")
 
-            # Compare both scores and find the winner of the game
-            in_game = pick_winner(updated_user_score, updated_computer_score)
+                # Compare both scores and find the winner of the game
+                in_game = pick_winner(updated_user_score, updated_computer_score)
 
-            # Using new_game function to play another round
-            new_game()
+                # Using new_game function to play another round
+                new_game()
 
 
 def card_dealer(side):
     """Give one card to chosen side and update the deck"""
-
     suit_name, suit_card = random.choice( list( card_deck.items() ) )
     random_card = random.choice(card_deck[suit_name])
     side.append(random_card)
@@ -67,18 +95,20 @@ def card_dealer(side):
 
 def score_calculator(hand):
     """Calculate and return the score base on player hand"""
+    return sum(hand)
 
-    score = 0
 
-    for card in hand:
-        score += card
+def blackjack_checker(player_hand):
+    """Check if in player hand is Ace and 10 for black jack"""
+    if 11 in player_hand and 10 in player_hand:
+        return True
 
-    return score
+    else:
+        return False
 
 
 def ace_checker(gamer_hand, gamer_score):
     """Check if there is an Ace in hand and the score is 21 to change the Ace value to (1)"""
-
     if 11 in gamer_hand and gamer_score > 21:
         ace = gamer_hand.index(11)
         gamer_hand[ace] = 1
@@ -89,7 +119,6 @@ def ace_checker(gamer_hand, gamer_score):
 
 def computer_hand_updater(com_hand, com_score):
     """Force computer to pick another card if computer score is below 17"""
-
     while com_score < 17:
 
         print("\n!!Computer picks another card form the deck!!")
@@ -104,28 +133,17 @@ def computer_hand_updater(com_hand, com_score):
 
 def pick_winner(side1_score, side2_score):
     """Can judge the game and pick the winner base on score"""
-
-    if side1_score <= 21 < side2_score:
+    if side2_score > 21:
         print("** You Win. **\n")
         return False
 
-    elif side2_score <= 21 < side1_score:
-        print("** You Lose! **\n")
+    elif side1_score > side2_score:
+        print("** You Win. **\n")
         return False
 
-    elif side1_score <= 21 and side2_score <= 21:
-
-        if side1_score > side2_score:
-            print("** You Win. **\n")
-            return False
-
-        elif side1_score < side2_score:
-            print("** You Lose! **\n")
-            return False
-
-        else:
-            print("** It\'s a Draw. **\n")
-            return False
+    elif side1_score < side2_score:
+        print("** You Lose! **\n")
+        return False
 
     else:
         print("** It\'s a Draw. **\n")
@@ -133,7 +151,6 @@ def pick_winner(side1_score, side2_score):
 
 
 def new_game():
-
     if input("Do you want to play another round?(Y/N) ").lower() == 'y':
         print("\n\n!!New Round!!\n")
         game_engine()
@@ -162,3 +179,5 @@ if game_start == 'y':
 
 else:
     print("\nOk. See You :)\n")
+    
+    
